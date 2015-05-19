@@ -12,11 +12,11 @@ horizontal_red = 8;
 vert_red = 2;
 mask = zeros(size(inImg));
 mask(horizontal_red:nr-horizontal_red,horizontal_red:nc-horizontal_red,vert_red:nd-vert_red) = 1;
-enhImg = TuFF.brightVesselEnhanceFrangi3D(inImg,2,1).*mask;
+enhImg = TuFF.brightVesselEnhanceFrangi3D(inImg,3,1).*mask;
 enhImg = enhImg/max(enhImg(:));
 StdIP.write3DStack(enhImg,'enhanced');
 %% Segmentation with TuFF: Initialization
-phi0 = TuFF.initRegionOtsu(enhImg,0.9,10);
+phi0 = TuFF.initRegionOtsu(enhImg,0.9,1000);
 StdIP.imshow3D(phi0>0,0.4);
 
 %% Segmentation with TuFF: Curve Evolution
@@ -54,7 +54,8 @@ skel = StdIP.find3DSkeleton(bwI);
 skeleton_graph = StdIP.skel2Graph3D(skel);
 
 %%
-StdIP.saveASswc(skel,skeleton_graph);
+% StdIP.saveAllswc(skel,skeleton_graph);
+StdIP.saveAllswc(skel,2,2);
 
 %% Delete the objects
 
