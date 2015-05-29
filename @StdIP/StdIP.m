@@ -92,6 +92,7 @@ classdef StdIP
             % Usage: G = skel2Graph3D(skel)
             %       skel: 3D skeleton image
             %       G: struct('SparseGraph',[],'NodeList',[],'ParentList',[],'NodePosition',[]);
+            skel_pts = find(skel == 1);
             N = length(skel_pts);
             G = zeros(N);
             parent = zeros(N,1);
@@ -161,6 +162,7 @@ classdef StdIP
             % Usage: imshow3D(Img,isoval)
             %       Img: MxNxD array
             %       isoval: ~0.4
+            theta1 = -75;
             theta2 = 50;
             [nr,nc,nd] = size(Img);
             lims = [1 nc 1 nr 1 nd];
@@ -221,12 +223,13 @@ classdef StdIP
             fclose(fid);
         end
         
-        function [] = saveAllswc(skel,num_preserve,rad)
+        function [] = saveAllswc(skel,num_preserve,rad,res)
             % Save all the swc files
-            % Usage: StdIP.saveAllswc(skel,num_preserve,rad)
+            % Usage: StdIP.saveAllswc(skel,num_preserve,rad,res)
             %       skel: skeleton image
             %       num_preserve: num. of components to preserve
             %       rad: radii of the neuron
+            %       res: resolution of tracing
             CC = bwconncomp(skel);
             N = CC.NumObjects;
             if N > num_preserve
@@ -243,7 +246,7 @@ classdef StdIP
                 nodePos.x = y';
                 nodePos.y = x';
                 nodePos.z = z';
-                [splinedG,splinedNode] = StdIP.graphSpline3D(skeleton_graph.SparseGraph,nodePos,4);
+                [splinedG,splinedNode] = StdIP.graphSpline3D(skeleton_graph.SparseGraph,nodePos,res);
                 StdIP.toSWC(skel,sparse(splinedG),splinedNode,1,rad,rad,1);
             end
             
